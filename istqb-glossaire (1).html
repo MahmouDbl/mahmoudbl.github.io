@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISTQB — Révision Complète</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0e14;
+  --surface: #13171f;
+  --surface2: #1c2230;
+  --surface3: #222839;
+  --border: #252c3d;
+  --accent: #4af2a1;
+  --accent2: #ff6b6b;
+  --accent3: #ffd93d;
+  --accent4: #6bc5ff;
+  --purple: #c084fc;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --white: #ffffff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+/* NAV */
+.nav { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; padding: 0 24px; }
+.nav-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+.nav-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; color: var(--accent); padding: 16px 0; margin-right: 32px; flex-shrink: 0; }
+.nav-tabs { display: flex; gap: 0; flex: 1; }
+.nav-tab { padding: 16px 22px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--white); border-bottom-color: var(--accent); }
+
+/* PAGES */
+.page { display: none; padding: 40px 24px 80px; max-width: 960px; margin: 0 auto; }
+.page.active { display: block; animation: fadeIn 0.4s ease both; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* HERO */
+.hero { text-align: center; margin-bottom: 48px; }
+.badge { display: inline-block; background: rgba(74,242,161,0.1); border: 1px solid rgba(74,242,161,0.3); color: var(--accent); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; padding: 5px 16px; border-radius: 100px; margin-bottom: 16px; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(26px,5vw,44px); font-weight: 800; color: var(--white); line-height: 1.15; margin-bottom: 10px; }
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero p { color: var(--muted); font-size: 14px; font-family: 'DM Mono', monospace; }
+
+/* ── RÉSUMÉ ── */
+.resume-grid { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+@media(max-width:680px){ .resume-grid{ grid-template-columns:1fr; } .toc{ display:none; } }
+
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: sticky; top: 65px; }
+.toc-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
+.toc-item { display: block; padding: 7px 10px; border-radius: 6px; font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.15s; margin-bottom: 2px; border-left: 2px solid transparent; }
+.toc-item:hover { color: var(--text); background: var(--surface2); }
+.toc-item.active-toc { color: var(--accent); border-left-color: var(--accent); background: rgba(74,242,161,0.06); }
+
+.resume-content { display: flex; flex-direction: column; gap: 22px; }
+
+.section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.section-header { display: flex; align-items: center; gap: 14px; padding: 18px 24px; background: var(--surface2); border-bottom: 1px solid var(--border); cursor: pointer; }
+.section-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.si-blue{ background:rgba(107,197,255,0.15); } .si-yellow{ background:rgba(255,217,61,0.15); }
+.si-green{ background:rgba(74,242,161,0.15); } .si-purple{ background:rgba(192,132,252,0.15); }
+.si-red{ background:rgba(255,107,107,0.15); }
+.section-meta { flex: 1; }
+.section-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--white); }
+.section-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-top: 2px; }
+.section-toggle { color: var(--muted); font-size: 14px; transition: transform 0.3s; flex-shrink:0; }
+.section-card.open .section-toggle { transform: rotate(180deg); }
+.section-body { padding: 24px; display: none; }
+.section-card.open .section-body { display: block; }
+
+.concept-block { margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+.concept-block:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.concept-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.concept-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.cd-blue{background:var(--accent4);} .cd-yellow{background:var(--accent3);} .cd-green{background:var(--accent);} .cd-red{background:var(--accent2);} .cd-purple{background:var(--purple);}
+.concept-text { font-size: 14px; line-height: 1.75; color: #94a3b8; }
+.concept-text strong { color: var(--text); font-weight: 500; }
+.concept-text em { color: var(--accent3); font-style: normal; }
+
+.schema { display: flex; align-items: center; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
+.schema-box { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: 'Syne', sans-serif; text-align:center; }
+.sb-yellow{background:rgba(255,217,61,0.15);color:var(--accent3);border:1px solid rgba(255,217,61,0.3);}
+.sb-teal{background:rgba(74,242,161,0.15);color:var(--accent);border:1px solid rgba(74,242,161,0.3);}
+.sb-red{background:rgba(255,107,107,0.15);color:var(--accent2);border:1px solid rgba(255,107,107,0.3);}
+.sb-blue{background:rgba(107,197,255,0.15);color:var(--accent4);border:1px solid rgba(107,197,255,0.3);}
+.schema-arrow { color: var(--muted); font-size: 16px; }
+.schema-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; text-align: center; margin-top: 3px; }
+
+.callout { background:rgba(74,242,161,0.06); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:12px 16px; margin:12px 0; font-size:13px; color:#94a3b8; line-height:1.6; font-family:'DM Mono',monospace; }
+.callout.warn { background:rgba(255,217,61,0.06); border-left-color:var(--accent3); }
+.callout.danger { background:rgba(255,107,107,0.06); border-left-color:var(--accent2); }
+
+.principle-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; margin-top:8px; }
+.p-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; }
+.p-num { font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.15em; margin-bottom:6px; }
+.p-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--white); margin-bottom:6px; }
+.p-desc { font-size:12px; color:#94a3b8; line-height:1.55; }
+
+.table-wrap { overflow-x:auto; margin:12px 0; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:var(--surface2); color:var(--accent); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+td { padding:10px 14px; border-bottom:1px solid var(--border); color:#94a3b8; line-height:1.5; vertical-align:top; }
+td strong { color:var(--text); }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(255,255,255,0.02); }
+
+/* ── FLASHCARDS ── */
+.fc-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+.fc-score-row { display:flex; gap:12px; flex-wrap:wrap; }
+.score-chip { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:8px 16px; text-align:center; min-width:70px; }
+.score-num { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; display:block; }
+.score-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.1em; }
+.sn-green{color:var(--accent);} .sn-red{color:var(--accent2);} .sn-yellow{color:var(--accent3);}
+
+.filter-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+.ftab { padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-family:'DM Mono',monospace; font-size:11px; cursor:pointer; transition:all 0.15s; }
+.ftab:hover { color:var(--text); border-color:var(--accent4); }
+.ftab.active { background:var(--accent); color:var(--bg); border-color:var(--accent); font-weight:500; }
+
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+.fc { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:border-color 0.2s,transform 0.15s,box-shadow 0.2s; position:relative; animation:cardIn 0.4s ease both; }
+@keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.fc:hover { border-color:var(--accent4); transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,0.3); }
+.fc .front, .fc .back { padding:20px; min-height:145px; }
+.fc .back { display:none; background:var(--surface2); flex-direction:column; justify-content:space-between; }
+.fc.flipped .front { display:none; }
+.fc.flipped .back { display:flex; }
+.fc-cat { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:10px; display:block; }
+.fc-term { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; color:var(--white); line-height:1.3; }
+.fc-hint { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-top:14px; }
+.fc-def { font-size:13px; line-height:1.65; color:#94a3b8; flex:1; margin-bottom:12px; }
+.fc-def strong { color:var(--text); }
+.fc-ex { background:rgba(74,242,161,0.06); border-left:2px solid var(--accent); padding:8px 10px; border-radius:0 6px 6px 0; font-size:11px; font-family:'DM Mono',monospace; color:#64748b; line-height:1.5; margin-bottom:12px; }
+.fc-btns { display:flex; gap:6px; }
+.fbtn { flex:1; padding:7px 4px; border-radius:6px; border:1px solid; font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; transition:background 0.15s; }
+.fbtn-good{background:rgba(74,242,161,0.1);border-color:var(--accent);color:var(--accent);}
+.fbtn-good:hover{background:rgba(74,242,161,0.2);}
+.fbtn-bad{background:rgba(255,107,107,0.1);border-color:var(--accent2);color:var(--accent2);}
+.fbtn-bad:hover{background:rgba(255,107,107,0.2);}
+.fbtn-flip{background:rgba(107,197,255,0.1);border-color:var(--accent4);color:var(--accent4);}
+.fbtn-flip:hover{background:rgba(107,197,255,0.2);}
+.status-dot { position:absolute; top:10px; right:10px; width:7px; height:7px; border-radius:50%; }
+.dot-g{background:var(--accent);} .dot-r{background:var(--accent2);}
+.empty-msg { text-align:center; padding:60px; color:var(--muted); font-family:'DM Mono',monospace; font-size:13px; }
+
+/* ── QUIZ ── */
+.quiz-wrap { max-width:680px; margin:0 auto; }
+.quiz-progress-bar { background:var(--surface2); border-radius:100px; height:6px; margin-bottom:28px; overflow:hidden; }
+.quiz-progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent4)); border-radius:100px; transition:width 0.5s cubic-bezier(0.4,0,0.2,1); }
+.quiz-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.quiz-counter { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); }
+.quiz-score-live { font-family:'DM Mono',monospace; font-size:12px; color:var(--accent); }
+.question-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px; margin-bottom:16px; animation:fadeIn 0.35s ease both; }
+.q-category { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px; }
+.q-text { font-family:'Syne',sans-serif; font-size:18px; font-weight:600; color:var(--white); line-height:1.45; margin-bottom:24px; }
+.options { display:flex; flex-direction:column; gap:10px; }
+.option { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 18px; cursor:pointer; transition:all 0.15s; display:flex; align-items:flex-start; gap:12px; font-size:14px; line-height:1.5; color:var(--text); }
+.option:hover:not(.answered) { border-color:var(--accent4); background:rgba(107,197,255,0.06); }
+.option.correct { border-color:var(--accent); background:rgba(74,242,161,0.1); color:var(--white); }
+.option.wrong { border-color:var(--accent2); background:rgba(255,107,107,0.1); }
+.option.show-correct { border-color:var(--accent); background:rgba(74,242,161,0.07); }
+.opt-letter { width:26px; height:26px; border-radius:6px; background:var(--surface3); display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:11px; font-weight:500; flex-shrink:0; transition:background 0.15s; }
+.option.correct .opt-letter { background:var(--accent); color:var(--bg); }
+.option.wrong .opt-letter { background:var(--accent2); color:var(--white); }
+.explanation { background:var(--surface2); border-left:3px solid var(--accent4); border-radius:0 10px 10px 0; padding:14px 16px; margin-top:16px; font-size:13px; color:#94a3b8; line-height:1.65; display:none; }
+.explanation.show { display:block; }
+.explanation strong { color:var(--text); }
+.quiz-nav { display:flex; justify-content:flex-end; margin-top:16px; }
+.btn-next { background:var(--accent); color:var(--bg); border:none; border-radius:8px; padding:12px 28px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:opacity 0.15s; display:none; }
+.btn-next.show { display:block; }
+.btn-next:hover { opacity:0.85; }
+.results { text-align:center; padding:40px 20px; background:var(--surface); border:1px solid var(--border); border-radius:14px; display:none; }
+.results.show { display:block; animation:fadeIn 0.5s ease both; }
+.result-score { font-family:'Syne',sans-serif; font-size:64px; font-weight:800; line-height:1; margin-bottom:8px; }
+.result-label { color:var(--muted); font-family:'DM Mono',monospace; font-size:13px; margin-bottom:28px; }
+.result-bars { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:28px; }
+.result-bar .rb-num { font-family:'Syne',sans-serif; font-size:24px; font-weight:700; }
+.result-bar .rb-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.12em; margin-top:2px; }
+.btn-retry { background:var(--surface2); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:11px 24px; font-family:'Syne',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:border-color 0.2s; margin:0 6px; }
+.btn-retry:hover { border-color:var(--accent); color:var(--accent); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">ISTQB FL</div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showPage('resume',this)">📖 Résumé de cours</div>
+      <div class="nav-tab" onclick="showPage('flashcards',this)">🃏 Flashcards</div>
+      <div class="nav-tab" onclick="showPage('quiz',this)">✏️ Quiz</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════ PAGE 1 : RÉSUMÉ ══════ -->
+<div class="page active" id="page-resume">
+  <div class="hero">
+    <span class="badge">ISTQB · Niveau Fondation · Chapitre 1</span>
+    <h1>Fondamentaux des <em>Tests Logiciels</em></h1>
+    <p>Résumé complet · 5 thématiques · Schémas & exemples inclus</p>
+  </div>
+  <div class="resume-grid">
+    <aside class="toc">
+      <div class="toc-title">Table des matières</div>
+      <span class="toc-item active-toc" onclick="openSection('s1',this)">1. Définition & Objectifs</span>
+      <span class="toc-item" onclick="openSection('s2',this)">2. Terminologie clé</span>
+      <span class="toc-item" onclick="openSection('s3',this)">3. Les 7 Principes</span>
+      <span class="toc-item" onclick="openSection('s4',this)">4. Processus & Rôles</span>
+      <span class="toc-item" onclick="openSection('s5',this)">5. Psychologie du test</span>
+    </aside>
+    <div class="resume-content">
+
+      <!-- S1 -->
+      <div class="section-card open" id="s1">
+        <div class="section-header" onclick="toggleSection('s1')">
+          <div class="section-icon si-blue">🧪</div>
+          <div class="section-meta"><div class="section-title">1. Définition & Objectifs du Test</div><div class="section-sub">Qu'est-ce que tester ? Pourquoi tester ?</div></div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-blue"></span>Définition du test logiciel</div>
+            <div class="concept-text">Le test logiciel est une <strong>méthodologie d'évaluation de la qualité</strong> d'un logiciel et de ses artefacts (objets de test). Il vise à <strong>faciliter la détection des défauts</strong> et réduire le risque de défaillance en production.<br><br>
+            ⚠ Le test n'est <strong>pas</strong> uniquement l'exécution du logiciel : il inclut aussi la planification, la conception, les revues (test statique), et la gestion.<br><br>
+            Le test implique à la fois la <strong>vérification</strong> (conforme aux specs ?) et la <strong>validation</strong> (conforme aux besoins réels ?).</div>
+            <div class="callout">💡 Test dynamique = exécuter le logiciel · Test statique = revues, inspection sans exécution</div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-blue"></span>Objectifs du test</div>
+            <div class="table-wrap"><table>
+              <tr><th>Objectif</th><th>Explication</th></tr>
+              <tr><td><strong>Évaluer les artefacts</strong></td><td>Exigences, user stories, code, conception…</td></tr>
+              <tr><td><strong>Provoquer des défaillances</strong></td><td>Pour trouver des défauts cachés</td></tr>
+              <tr><td><strong>Réduire les risques</strong></td><td>Qualité insuffisante = risque business</td></tr>
+              <tr><td><strong>Vérifier les exigences</strong></td><td>Le système fait-il ce qu'on lui demande ?</td></tr>
+              <tr><td><strong>Informer les parties prenantes</strong></td><td>Décisions éclairées basées sur les résultats</td></tr>
+              <tr><td><strong>Construire la confiance</strong></td><td>Dans la qualité de l'objet de test</td></tr>
+            </table></div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-blue"></span>Test vs Débogage — activités distinctes</div>
+            <div class="schema">
+              <div><div class="schema-box sb-blue">TEST</div><div class="schema-label">Détecte la défaillance</div></div>
+              <span class="schema-arrow">→</span>
+              <div><div class="schema-box sb-teal">DÉBOGAGE</div><div class="schema-label">Trouve & corrige le défaut</div></div>
+              <span class="schema-arrow">→</span>
+              <div><div class="schema-box sb-blue">TEST (confirmation)</div><div class="schema-label">Vérifie la correction</div></div>
+            </div>
+            <div class="callout warn">⚠ En test statique : pas besoin de reproduire — le défaut est constaté directement.</div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-blue"></span>Test & Assurance Qualité</div>
+            <div class="concept-text"><strong>AQ</strong> = définir processus et normes (préventif) · <strong>Contrôle Qualité</strong> = appliquer ces processus · <strong>Test</strong> = forme de contrôle qualité.</div>
+            <div class="schema">
+              <div class="schema-box sb-teal">Assurance Qualité</div><span class="schema-arrow">⊃</span>
+              <div class="schema-box sb-blue">Contrôle Qualité</div><span class="schema-arrow">⊃</span>
+              <div class="schema-box sb-yellow">Test</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S2 -->
+      <div class="section-card open" id="s2">
+        <div class="section-header" onclick="toggleSection('s2')">
+          <div class="section-icon si-yellow">📚</div>
+          <div class="section-meta"><div class="section-title">2. Terminologie Essentielle</div><div class="section-sub">Erreur · Défaut · Défaillance · Cause racine</div></div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-yellow"></span>La chaîne Erreur → Défaut → Défaillance</div>
+            <div class="schema" style="margin:16px 0">
+              <div><div class="schema-box sb-yellow">ERREUR</div><div class="schema-label">Action humaine</div></div>
+              <span class="schema-arrow">→ peut causer →</span>
+              <div><div class="schema-box sb-teal">DÉFAUT</div><div class="schema-label">Dans le logiciel</div></div>
+              <span class="schema-arrow">→ peut causer →</span>
+              <div><div class="schema-box sb-red">DÉFAILLANCE</div><div class="schema-label">Dans le produit</div></div>
+            </div>
+            <div class="table-wrap"><table>
+              <tr><th>Terme</th><th>Définition</th><th>Exemple</th></tr>
+              <tr><td><strong>Erreur</strong></td><td>Action humaine incorrecte (toujours humaine)</td><td>Dev utilise la mauvaise formule</td></tr>
+              <tr><td><strong>Défaut (bug)</strong></td><td>Résultat de l'erreur dans le code/artefact</td><td>Division par zéro non vérifiée</td></tr>
+              <tr><td><strong>Défaillance</strong></td><td>Comportement ≠ comportement attendu</td><td>L'app plante si diviseur = 0</td></tr>
+              <tr><td><strong>Cause racine</strong></td><td>Première condition ayant créé le défaut</td><td>PO ignorait comment calculer les intérêts</td></tr>
+            </table></div>
+            <div class="callout danger">⚠ Un défaut n'entraîne PAS toujours une défaillance — dépend des conditions d'exécution.</div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-yellow"></span>Causes des erreurs humaines</div>
+            <div class="concept-text">Pression temporelle · Faillibilité humaine · Manque d'expérience · <strong>Ambiguïtés dans les exigences</strong> · Complexité du code · Utilisation de nouvelles technologies · Problèmes de communication entre parties prenantes.</div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-yellow"></span>Défaillances environnementales</div>
+            <div class="concept-text">Les défaillances peuvent aussi venir de <strong>facteurs environnementaux</strong> : radiation, champ électromagnétique, contamination physique (humidité, poussière), logiciels malveillants.</div>
+            <div class="callout">🐛 Anecdote : le 1er bug (1947) était un papillon de nuit coincé dans le relais du Mark II à Harvard !</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S3 -->
+      <div class="section-card open" id="s3">
+        <div class="section-header" onclick="toggleSection('s3')">
+          <div class="section-icon si-green">⚖️</div>
+          <div class="section-meta"><div class="section-title">3. Les 7 Principes du Test</div><div class="section-sub">Fondements universels · À retenir absolument pour l'examen</div></div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="principle-grid">
+            <div class="p-card"><div class="p-num">PRINCIPE 1</div><div class="p-title">Présence, non absence</div><div class="p-desc">Le test prouve qu'il y a des défauts, jamais leur absence. Trouver 0 défaut ≠ logiciel sans défaut.</div></div>
+            <div class="p-card"><div class="p-num">PRINCIPE 2</div><div class="p-title">Test exhaustif impossible</div><div class="p-desc">Tester toutes les combinaisons est irréalisable. Prioriser par analyse des risques et techniques de test.</div></div>
+            <div class="p-card"><div class="p-num">PRINCIPE 3</div><div class="p-title">Tester tôt économise</div><div class="p-desc">Courbe de Boehm : défaut en Requirements = 1x. En Production = 150x. Coût exponentiel.</div></div>
+            <div class="p-card"><div class="p-num">PRINCIPE 4</div><div class="p-title">Regroupement (Pareto)</div><div class="p-desc">80% des défauts dans 20% des modules. Cibler ces zones, sans négliger le reste.</div></div>
+            <div class="p-card"><div class="p-num">PRINCIPE 5</div><div class="p-title">Usure des tests</div><div class="p-desc">Mêmes tests répétés → plus efficaces. Renouveler régulièrement. (Paradoxe des pesticides)</div></div>
+            <div class="p-card"><div class="p-num">PRINCIPE 6</div><div class="p-title">Test selon le contexte</div><div class="p-desc">Stratégie différente selon domaine, risque, méthode (Agile vs séquentiel).</div></div>
+            <div class="p-card"><div class="p-num">PRINCIPE 7</div><div class="p-title">Illusion d'absence de défaut</div><div class="p-desc">Zéro défaut ne garantit pas le succès si le logiciel ne répond pas aux vrais besoins.</div></div>
+          </div>
+          <div class="callout warn" style="margin-top:16px">📌 Astuce examen : retenez les mots-clés → Pareto · Boehm · pesticides · exhaustif · contexte · illusion</div>
+        </div>
+      </div>
+
+      <!-- S4 -->
+      <div class="section-card open" id="s4">
+        <div class="section-header" onclick="toggleSection('s4')">
+          <div class="section-icon si-purple">👥</div>
+          <div class="section-meta"><div class="section-title">4. Processus, Testware & Rôles</div><div class="section-sub">Activités · Test Manager · Testeur · Indépendance</div></div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-purple"></span>Rôles dans le test</div>
+            <div class="table-wrap"><table>
+              <tr><th>Rôle</th><th>Responsabilités principales</th></tr>
+              <tr><td><strong>Test Manager</strong></td><td>Planification · Pilotage · Contrôle · Clôture · Gestion de l'équipe de test</td></tr>
+              <tr><td><strong>Testeur</strong></td><td>Analyse · Conception · Implémentation · Exécution des tests</td></tr>
+            </table></div>
+            <div class="callout">💡 Une même personne peut assurer les deux rôles selon le contexte.</div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-purple"></span>Niveaux d'indépendance des tests</div>
+            <div class="schema" style="flex-wrap:wrap;gap:8px;margin:14px 0">
+              <div><div class="schema-box sb-red" style="font-size:11px">Auteur<br>(0)</div></div>
+              <span class="schema-arrow">→</span>
+              <div><div class="schema-box sb-yellow" style="font-size:11px">Pair<br>(faible)</div></div>
+              <span class="schema-arrow">→</span>
+              <div><div class="schema-box sb-teal" style="font-size:11px">Équipe externe<br>(élevée)</div></div>
+              <span class="schema-arrow">→</span>
+              <div><div class="schema-box sb-blue" style="font-size:11px">Expert externe<br>(très élevée)</div></div>
+            </div>
+            <div class="table-wrap"><table>
+              <tr><th>Avantages</th><th>Inconvénients</th></tr>
+              <tr><td>Détecte des défauts différents · Remet en question les hypothèses</td><td>Isolement possible · Dev perd le sens de la qualité · Perçu comme "goulot d'étranglement"</td></tr>
+            </table></div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-purple"></span>Approche Équipe Intégrée (XP)</div>
+            <div class="concept-text">Issue de l'<strong>eXtreme Programming</strong>. Tout membre peut effectuer n'importe quelle tâche. Chacun est responsable de la qualité. Favorise synergie et collaboration. <em>Non adaptée aux contextes critiques pour la sécurité.</em></div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-purple"></span>Testware & Traçabilité</div>
+            <div class="concept-text">Artefacts produits lors du test : <strong>plans de test, cas de test, scripts, données de test, rapports de défauts, environnements</strong>. La traçabilité entre testware et exigences est essentielle pour la couverture et l'auditabilité.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S5 -->
+      <div class="section-card open" id="s5">
+        <div class="section-header" onclick="toggleSection('s5')">
+          <div class="section-icon si-red">🧠</div>
+          <div class="section-meta"><div class="section-title">5. Psychologie du Test</div><div class="section-sub">Biais de confirmation · Communication · État d'esprit</div></div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-red"></span>Biais de confirmation</div>
+            <div class="concept-text">Tendance naturelle à <strong>chercher les informations qui confirment</strong> ses croyances et ignorer ce qui les contredit. Les développeurs attendent que leur code soit correct → difficile d'accepter les défauts trouvés par d'autres.</div>
+            <div class="callout danger">⚠ Le test est perçu comme "destructif" par certains. Le testeur doit communiquer de façon neutre et factuelle.</div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-red"></span>Règles de communication constructive</div>
+            <div class="concept-text">
+              • Commencer par la <strong>collaboration</strong>, pas la confrontation<br>
+              • Mettre en avant les <strong>bénéfices du test</strong> pour le projet<br>
+              • Rapports <strong>objectifs et factuels</strong> (sans critiquer la personne)<br>
+              • Écouter et comprendre le ressenti de l'autre<br>
+              • Confirmer la <strong>compréhension mutuelle</strong>
+            </div>
+          </div>
+          <div class="concept-block">
+            <div class="concept-title"><span class="concept-dot cd-red"></span>État d'esprit : Testeur vs Développeur</div>
+            <div class="table-wrap"><table>
+              <tr><th>Testeur</th><th>Développeur</th></tr>
+              <tr><td>Cherche à <strong>casser</strong> le système</td><td>Cherche à <strong>construire</strong> le système</td></tr>
+              <tr><td>Pessimisme professionnel</td><td>Optimisme sur son propre code</td></tr>
+              <tr><td>Curiosité, œil critique, détails</td><td>Focus fonctionnalités & architecture</td></tr>
+              <tr><td>"Où pourrait-il échouer ?"</td><td>"Comment le faire marcher ?"</td></tr>
+            </table></div>
+            <div class="callout">💡 L'union des deux points de vue produit un logiciel de meilleure qualité — c'est le principe de l'équipe intégrée.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PAGE 2 : FLASHCARDS ══════ -->
+<div class="page" id="page-flashcards">
+  <div class="hero">
+    <span class="badge">Flashcards interactives · 27 cartes</span>
+    <h1>Cartes de <em>Révision</em></h1>
+    <p>Cliquez pour révéler · Évaluez votre maîtrise · Filtrez par catégorie</p>
+  </div>
+  <div class="fc-header">
+    <div class="fc-score-row">
+      <div class="score-chip"><span class="score-num" id="fc-total">27</span><span class="score-label">Cartes</span></div>
+      <div class="score-chip"><span class="score-num sn-green" id="fc-good">0</span><span class="score-label">Maîtrisé</span></div>
+      <div class="score-chip"><span class="score-num sn-red" id="fc-bad">0</span><span class="score-label">À revoir</span></div>
+      <div class="score-chip"><span class="score-num sn-yellow" id="fc-pct">0%</span><span class="score-label">Score</span></div>
+    </div>
+  </div>
+  <div class="filter-tabs" id="fc-filters">
+    <div class="ftab active" onclick="fcFilter('all',this)">Tout</div>
+    <div class="ftab" onclick="fcFilter('term',this)">🔵 Terminologie</div>
+    <div class="ftab" onclick="fcFilter('principe',this)">🟡 7 Principes</div>
+    <div class="ftab" onclick="fcFilter('processus',this)">🟢 Processus</div>
+    <div class="ftab" onclick="fcFilter('roles',this)">🟣 Rôles</div>
+    <div class="ftab" onclick="fcFilter('psycho',this)">🔴 Psychologie</div>
+    <div class="ftab" onclick="fcFilter('revoir',this)">⚠ À revoir</div>
+  </div>
+  <div class="cards-grid" id="fc-grid"></div>
+</div>
+
+<!-- ══════ PAGE 3 : QUIZ ══════ -->
+<div class="page" id="page-quiz">
+  <div class="hero">
+    <span class="badge">Quiz · 20 questions · QCM</span>
+    <h1>Quiz <em>ISTQB</em></h1>
+    <p>Testez vos connaissances · Une seule bonne réponse par question</p>
+  </div>
+  <div class="quiz-wrap">
+    <div id="quiz-active">
+      <div class="quiz-meta">
+        <span class="quiz-counter" id="q-counter">Question 1 / 20</span>
+        <span class="quiz-score-live" id="q-score-live">0 / 0 correctes</span>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="q-progress" style="width:0%"></div></div>
+      <div id="question-container"></div>
+      <div class="quiz-nav"><button class="btn-next" id="btn-next" onclick="nextQuestion()">Question suivante →</button></div>
+    </div>
+    <div class="results" id="quiz-results">
+      <div class="result-score" id="r-score">--</div>
+      <div class="result-label" id="r-label">-- / 20 questions</div>
+      <div class="result-bars">
+        <div class="result-bar"><div class="rb-num sn-green" id="r-correct">0</div><div class="rb-label">Correctes ✓</div></div>
+        <div class="result-bar"><div class="rb-num sn-red" id="r-wrong">0</div><div class="rb-label">Incorrectes ✗</div></div>
+      </div>
+      <button class="btn-retry" onclick="restartQuiz()">🔄 Recommencer</button>
+      <button class="btn-retry" onclick="showPage('resume',document.querySelectorAll('.nav-tab')[0])">📖 Revoir le cours</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA FLASHCARDS ──
+const flashData = [
+  {id:1,cat:'term',catL:'Terminologie',term:'Test Logiciel',def:'Méthodologie visant à <strong>évaluer la qualité</strong> d\'un logiciel et de ses artefacts. Facilite la détection des défauts et réduit le risque de défaillance.',ex:'Ex : Vérifier qu\'une appli bancaire calcule correctement les intérêts.'},
+  {id:2,cat:'term',catL:'Terminologie',term:'Erreur',def:'Action <strong>humaine</strong> produisant un résultat incorrect. Toujours liée à une cause humaine (fatigue, manque d\'expérience, ambiguïté…).',ex:'Ex : Un dev utilise une mauvaise formule de calcul.'},
+  {id:3,cat:'term',catL:'Terminologie',term:'Défaut (Bug)',def:'Résultat d\'une erreur introduit dans le code/artefact. <strong>Peut ou non</strong> causer une défaillance selon les conditions d\'exécution.',ex:'Ex : Division par zéro non vérifiée dans le code.'},
+  {id:4,cat:'term',catL:'Terminologie',term:'Défaillance',def:'Comportement du logiciel <strong>différent du comportement attendu</strong>. Causée par un défaut exécuté, ou par des facteurs environnementaux.',ex:'Ex : L\'app plante quand le diviseur vaut 0.'},
+  {id:5,cat:'term',catL:'Terminologie',term:'Cause Racine',def:'Première action/condition qui a <strong>contribué à la création du défaut</strong>. L\'analyser permet de prévenir des défauts similaires.',ex:'Ex : PO ne comprenait pas le calcul des intérêts.'},
+  {id:6,cat:'term',catL:'Terminologie',term:'Test Statique vs Dynamique',def:'<strong>Dynamique :</strong> exécution du logiciel.<br><strong>Statique :</strong> analyse sans exécution (revues, inspection). Constate directement les défauts.',ex:'Statique : relire les specs pour trouver des ambiguïtés.'},
+  {id:7,cat:'term',catL:'Terminologie',term:'Vérification vs Validation',def:'<strong>Vérification :</strong> conforme aux exigences spécifiées ?<br><strong>Validation :</strong> conforme aux besoins réels des utilisateurs ?',ex:'Vérif : "Fait-il ce que la spec dit ?" / Valid : "Est-ce utile ?"'},
+  {id:8,cat:'term',catL:'Terminologie',term:'Test vs Débogage',def:'Activités <strong>distinctes</strong>. Le test détecte les défaillances. Le débogage <strong>trouve, analyse et corrige</strong> les défauts.',ex:'Test → "crash". Débogage → "ligne 42, div/0 → correction".'},
+  {id:9,cat:'term',catL:'Terminologie',term:'Assurance Qualité',def:'<strong>AQ ⊃ Contrôle Qualité ⊃ Test</strong>. L\'AQ définit les processus. Le test est une forme de contrôle qualité.',ex:'AQ = définir; Contrôle Q = vérifier; Test = mesurer.'},
+  {id:10,cat:'term',catL:'Terminologie',term:'Objet de Test',def:'Tout <strong>artefact soumis au test</strong> : code, exigences, user stories, conception, architecture…',ex:'Ex : le module de paiement d\'un e-commerce.'},
+  {id:11,cat:'principe',catL:'7 Principes',term:'P1 — Présence, non absence',def:'Le test prouve qu\'il y a des défauts, jamais leur absence. Trouver 0 défaut ≠ logiciel sans défaut.',ex:'Nature "négative" du test : cherche à casser.'},
+  {id:12,cat:'principe',catL:'7 Principes',term:'P2 — Test exhaustif impossible',def:'Tester toutes les combinaisons est irréalisable. Prioriser par analyse des risques.',ex:'Mot de passe 3 chars → jusqu\'à 256³ = 16M combinaisons.'},
+  {id:13,cat:'principe',catL:'7 Principes',term:'P3 — Tester tôt économise',def:'Coût de correction croît <strong>exponentiellement</strong>. Courbe de Boehm.',ex:'Requirements : 1x · Production : 150x.'},
+  {id:14,cat:'principe',catL:'7 Principes',term:'P4 — Regroupement (Pareto)',def:'80% des défauts dans 20% des modules. Cibler les zones à risque.',ex:'Composant Analytique : 230 défauts vs Data Import : 2.'},
+  {id:15,cat:'principe',catL:'7 Principes',term:'P5 — Usure des tests',def:'Mêmes tests répétés → ne détectent plus de nouveaux défauts. Renouveler. (Paradoxe des pesticides)',ex:'Les bugs "s\'immunisent" contre des tests identiques.'},
+  {id:16,cat:'principe',catL:'7 Principes',term:'P6 — Test selon le contexte',def:'La stratégie varie selon domaine, risque, méthode de dev (Agile vs séquentiel).',ex:'E-commerce : focus sécurité. Site vitrine : focus accessibilité.'},
+  {id:17,cat:'principe',catL:'7 Principes',term:'P7 — Illusion d\'absence de défaut',def:'Zéro défaut ne garantit pas le succès si le logiciel ne répond pas aux vrais besoins.',ex:'App parfaite techniquement mais inutilisable = échec.'},
+  {id:18,cat:'processus',catL:'Processus',term:'Testware',def:'Artefacts produits par les activités de test : plans, cas de test, scripts, rapports de défauts, données, environnements.',ex:'Ex : fichier Excel de 50 cas de test = testware.'},
+  {id:19,cat:'processus',catL:'Processus',term:'Objectifs du Test',def:'Évaluer artefacts · Trouver défauts · Réduire risques · Vérifier exigences · Informer parties prenantes · <strong>Construire la confiance</strong>.',ex:'Objectif ≠ prouver que le logiciel est correct.'},
+  {id:20,cat:'processus',catL:'Processus',term:'Approche Équipe Intégrée',def:'Issue de l\'XP : tout membre peut effectuer n\'importe quelle tâche. Chacun responsable de la qualité.',ex:'Dev rédige des tests d\'acceptation avec le client.'},
+  {id:21,cat:'processus',catL:'Processus',term:'Indépendance des Tests',def:'Le testeur indépendant détecte des défauts différents grâce à ses biais cognitifs distincts. Niveaux : auteur → pair → équipe externe → expert.',ex:'Avantage: regard neuf. Inconvénient: isolement possible.'},
+  {id:22,cat:'roles',catL:'Rôles',term:'Test Manager',def:'Responsable global du processus. Axé sur <strong>planification, pilotage, contrôle et clôture</strong> des tests.',ex:'Définit la stratégie, gère les ressources.'},
+  {id:23,cat:'roles',catL:'Rôles',term:'Testeur',def:'Responsable de l\'aspect technique. Axé sur <strong>analyse, conception, implémentation et exécution</strong> des tests.',ex:'Conçoit les cas de test, exécute, rédige les rapports.'},
+  {id:24,cat:'psycho',catL:'Psychologie',term:'Biais de Confirmation',def:'Tendance à chercher les infos qui confirment ses croyances. Les devs croient leur code correct → difficile d\'accepter les défauts.',ex:'Dev teste son propre code → trouve moins de bugs.'},
+  {id:25,cat:'psycho',catL:'Psychologie',term:'Test = Activité "destructive"',def:'Certains perçoivent le test comme une critique. Communiquer de façon <strong>neutre et factuelle</strong>.',ex:'"Module X retourne une erreur dans le cas Y" (factuel).'},
+  {id:26,cat:'psycho',catL:'Psychologie',term:'Communication constructive',def:'Collaboration avant confrontation · Bénéfices du test · Rapports objectifs · Écoute active · Compréhension mutuelle.',ex:'Règle d\'or : objectif commun = logiciel de qualité.'},
+  {id:27,cat:'psycho',catL:'Psychologie',term:'État d\'esprit du Testeur',def:'Curiosité · <strong>Pessimisme professionnel</strong> · Œil critique · Attention aux détails · Communication positive.',ex:'Testeur : "Où peut-il échouer ?" vs Dev : "Comment marcher ?"'},
+];
+
+// ── DATA QUIZ ──
+const quizData = [
+  {q:'Qu\'est-ce qu\'un défaut ?',opts:['Une erreur commise par un humain','Un comportement inattendu du logiciel','Un problème introduit dans le code résultant d\'une erreur','Une cause environnementale de dysfonctionnement'],ans:2,cat:'Terminologie',exp:'Un <strong>défaut</strong> (bug) est le résultat d\'une erreur humaine dans le code. La <strong>défaillance</strong> est le comportement inattendu visible par l\'utilisateur.'},
+  {q:'Selon le Principe 1, que peut prouver le test ?',opts:['L\'absence totale de défauts','La présence de défauts, mais jamais leur absence complète','La conformité totale aux exigences','La qualité globale du projet'],ans:1,cat:'7 Principes',exp:'Le test peut montrer que des défauts <strong>sont présents</strong>, mais ne peut jamais prouver qu\'il n\'en existe aucun.'},
+  {q:'Que représente la "Courbe de Boehm" (Principe 3) ?',opts:['La répartition des défauts par module','L\'augmentation exponentielle du coût de correction selon la phase de détection','Le nombre de tests nécessaires par complexité','La progression des compétences d\'un testeur'],ans:1,cat:'7 Principes',exp:'La courbe de Boehm illustre le Principe 3 : plus un défaut est détecté tard, plus son <strong>coût de correction est élevé</strong> (exponentiellement).'},
+  {q:'Quelle est la différence principale entre test et débogage ?',opts:['Ce sont des synonymes','Le test corrige les défauts, le débogage les détecte','Le test détecte les défaillances, le débogage trouve et corrige les défauts','Le débogage est uniquement pour les tests statiques'],ans:2,cat:'Terminologie',exp:'Le <strong>test</strong> provoque et identifie les défaillances. Le <strong>débogage</strong> trouve la cause (défaut), l\'analyse et la corrige.'},
+  {q:'Qu\'est-ce que le "Paradoxe des pesticides" (Principe 5) ?',opts:['Plus on teste, plus on crée de défauts','Les mêmes tests répétés détectent de moins en moins de défauts','Les testeurs indépendants trouvent moins de bugs','Les tests exhaustifs sont toujours possibles'],ans:1,cat:'7 Principes',exp:'Principe 5 : répéter les mêmes tests finit par ne plus détecter de nouveaux défauts. Il faut régulièrement <strong>renouveler les cas de test</strong>.'},
+  {q:'Quel principe énonce que 80% des défauts se trouvent dans 20% des modules ?',opts:['Principe 2 : Test exhaustif impossible','Principe 3 : Tester tôt','Principe 4 : Regroupement des défauts (Pareto)','Principe 6 : Contexte'],ans:2,cat:'7 Principes',exp:'Le <strong>Principe 4</strong> repose sur la <strong>loi de Pareto</strong> : cibler les modules à forte densité de défauts.'},
+  {q:'Quelle est la relation correcte entre AQ, Contrôle Qualité et Test ?',opts:['Ce sont trois activités indépendantes','AQ ⊂ Contrôle Qualité ⊂ Test','Test ⊂ Contrôle Qualité ⊂ AQ','AQ = Test, Contrôle Qualité est distinct'],ans:2,cat:'Terminologie',exp:'Le <strong>test</strong> est une forme de <strong>Contrôle Qualité</strong>, lui-même inclus dans l\'<strong>Assurance Qualité</strong>.'},
+  {q:'Un défaut dans le code entraîne-t-il toujours une défaillance ?',opts:['Oui, systématiquement','Non, seulement dans certaines conditions d\'exécution','Oui, si le code est exécuté au moins une fois','Non, le débogage l\'empêche toujours'],ans:1,cat:'Terminologie',exp:'Un défaut peut rester dormant. Il ne cause une <strong>défaillance</strong> que si les conditions spécifiques qui le déclenchent sont réunies.'},
+  {q:'Qu\'est-ce que la "validation" dans le cadre du test ?',opts:['Vérifier que le système est conforme aux exigences spécifiées','Vérifier que le système répond aux besoins réels des utilisateurs','S\'assurer que le code n\'a aucun défaut','Confirmer que les tests ont bien été exécutés'],ans:1,cat:'Terminologie',exp:'La <strong>validation</strong> s\'assure que le système répond aux <strong>besoins réels des utilisateurs</strong> (≠ vérification = conformité aux specs).'},
+  {q:'Quel est le rôle principal du Test Manager ?',opts:['Exécuter les cas de test et rédiger les rapports','Planifier, piloter, contrôler et clôturer le processus de test','Concevoir les architectures de test automatisé','Réaliser les tests d\'acceptation utilisateur'],ans:1,cat:'Rôles',exp:'Le <strong>Test Manager</strong> est responsable du processus global : planification, pilotage, contrôle et clôture.'},
+  {q:'Qu\'est-ce que le "biais de confirmation" ?',opts:['Les testeurs confirment que le logiciel est correct','La tendance à chercher des infos qui confirment ses croyances existantes','Le biais lié à l\'ordre d\'exécution des tests','L\'illusion d\'absence de défaut'],ans:1,cat:'Psychologie',exp:'Le <strong>biais de confirmation</strong> pousse les développeurs à croire leur code correct, rendant difficile l\'acceptation des défauts.'},
+  {q:'Qu\'est-ce que le "test statique" ?',opts:['Tester le logiciel sans l\'exécuter (revues, inspection)','Tester uniquement les fonctionnalités stables','Tester sans données d\'entrée','Répéter les mêmes tests plusieurs fois'],ans:0,cat:'Terminologie',exp:'Le <strong>test statique</strong> analyse les artefacts <strong>sans exécuter</strong> le logiciel. Il comprend les revues et l\'analyse statique.'},
+  {q:'Que signifie le Principe 7 — Illusion de l\'absence de défaut ?',opts:['Il est impossible de trouver tous les défauts','Corriger tous les défauts ne garantit pas le succès si le logiciel ne répond pas aux besoins','Les défauts disparaissent avec le temps','Le test ne peut créer qu\'une illusion de qualité'],ans:1,cat:'7 Principes',exp:'Même un logiciel sans défaut peut être un échec s\'il ne <strong>répond pas aux besoins réels</strong> des utilisateurs.'},
+  {q:'L\'approche Équipe Intégrée est issue de quelle pratique ?',opts:['SCRUM','Kanban','eXtreme Programming (XP)','CMMI'],ans:2,cat:'Processus',exp:'L\'<strong>approche équipe intégrée</strong> est une pratique issue de l\'<strong>eXtreme Programming (XP)</strong>.'},
+  {q:'Qu\'est-ce que le "testware" ?',opts:['Les outils d\'automatisation des tests','L\'ensemble des artefacts produits par les activités de test','Les spécifications fonctionnelles','Les serveurs dédiés aux tests'],ans:1,cat:'Processus',exp:'Le <strong>testware</strong> inclut tous les artefacts produits lors du test : plans, cas de test, scripts, données, rapports, environnements.'},
+  {q:'Pourquoi les testeurs indépendants sont-ils plus efficaces ?',opts:['Ils sont plus rapides','Ils ont des biais cognitifs différents de l\'auteur','Ils coûtent moins cher','Ils utilisent des outils plus avancés'],ans:1,cat:'Processus',exp:'L\'indépendance permet de détecter des défauts différents grâce aux <strong>biais cognitifs distincts</strong> de ceux de l\'auteur.'},
+  {q:'Qu\'est-ce que la "cause racine" d\'un défaut ?',opts:['Le module du code où se trouve le défaut','La première condition ou action qui a contribué à créer le défaut','La liste de tous les défauts similaires','L\'impact final sur l\'utilisateur'],ans:1,cat:'Terminologie',exp:'La <strong>cause racine</strong> est la première action/condition ayant contribué au défaut. L\'identifier permet de prévenir des défauts similaires.'},
+  {q:'Selon le Principe 6, les tests doivent être adaptés au… ?',opts:['Budget du projet','Nombre de développeurs','Contexte du projet (domaine, risques, méthode)','Délai imposé par le client'],ans:2,cat:'7 Principes',exp:'Le <strong>Principe 6</strong> stipule que la stratégie de test varie selon le contexte : domaine, risque, méthode (Agile vs séquentiel).'},
+  {q:'Quel état d\'esprit caractérise un bon testeur ?',opts:['Optimisme, confiance dans le code, rapidité','Curiosité, pessimisme professionnel, œil critique, attention aux détails','Conformisme, respect des plans','Méfiance envers les développeurs'],ans:1,cat:'Psychologie',exp:'Un bon testeur fait preuve de <strong>curiosité, pessimisme professionnel</strong>, d\'œil critique et d\'attention aux détails.'},
+  {q:'Pourquoi est-il illusoire de viser un test exhaustif (Principe 2) ?',opts:['Parce que les testeurs manquent de compétences','Parce que le nombre de combinaisons possibles est trop élevé','Parce que les outils sont insuffisants','Parce que les développeurs refusent de collaborer'],ans:1,cat:'7 Principes',exp:'Principe 2 : le nombre de combinaisons est astronomique (ex: 256³ pour un mot de passe à 3 chars). On cible les tests par <strong>analyse des risques</strong>.'},
+];
+
+// ── NAV ──
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'quiz' && !quizStarted) initQuiz();
+  if (id === 'flashcards') renderFC();
+}
+
+// ── RÉSUMÉ ──
+function toggleSection(id) { document.getElementById(id).classList.toggle('open'); }
+function openSection(id, el) {
+  document.querySelectorAll('.toc-item').forEach(t => t.classList.remove('active-toc'));
+  el.classList.add('active-toc');
+  const sec = document.getElementById(id);
+  if (!sec.classList.contains('open')) sec.classList.add('open');
+  sec.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── FLASHCARDS ──
+let fcStatus = {}, fcFilter2 = 'all';
+function catColor(cat) { return {term:'#6bc5ff',principe:'#ffd93d',processus:'#4af2a1',roles:'#c084fc',psycho:'#ff6b6b'}[cat]||'#94a3b8'; }
+function renderFC() {
+  const grid = document.getElementById('fc-grid');
+  const filtered = flashData.filter(c => fcFilter2==='revoir' ? fcStatus[c.id]==='bad' : fcFilter2==='all' ? true : c.cat===fcFilter2);
+  document.getElementById('fc-total').textContent = filtered.length;
+  if (!filtered.length) { grid.innerHTML='<div class="empty-msg">Aucune carte dans cette catégorie.</div>'; return; }
+  grid.innerHTML = filtered.map((c,i) => {
+    const s = fcStatus[c.id];
+    return `<div class="fc" id="fc-${c.id}" style="animation-delay:${i*0.03}s" onclick="fcFlip(${c.id},event)">
+      ${s?`<span class="status-dot ${s==='good'?'dot-g':'dot-r'}"></span>`:''}
+      <div class="front">
+        <span class="fc-cat" style="color:${catColor(c.cat)}">${c.catL}</span>
+        <div class="fc-term">${c.term}</div>
+        <div class="fc-hint">↩ Cliquer pour voir la définition</div>
+      </div>
+      <div class="back">
+        <div>
+          <span class="fc-cat" style="color:${catColor(c.cat)}">${c.catL}</span>
+          <div class="fc-def">${c.def}</div>
+          ${c.ex?`<div class="fc-ex">${c.ex}</div>`:''}
+        </div>
+        <div class="fc-btns">
+          <button class="fbtn fbtn-good" onclick="fcRate(event,${c.id},'good')">✓ Maîtrisé</button>
+          <button class="fbtn fbtn-bad" onclick="fcRate(event,${c.id},'bad')">✗ À revoir</button>
+          <button class="fbtn fbtn-flip" onclick="fcFlip(${c.id},event)">↩</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function fcFlip(id,e) { if(e.target.tagName==='BUTTON') return; document.getElementById('fc-'+id).classList.toggle('flipped'); }
+function fcRate(e,id,val) { e.stopPropagation(); fcStatus[id]=val; fcUpdateScore(); renderFC(); }
+function fcUpdateScore() {
+  const g=Object.values(fcStatus).filter(v=>v==='good').length;
+  const b=Object.values(fcStatus).filter(v=>v==='bad').length;
+  document.getElementById('fc-good').textContent=g;
+  document.getElementById('fc-bad').textContent=b;
+  document.getElementById('fc-pct').textContent=Math.round(g/flashData.length*100)+'%';
+}
+function fcFilter(cat,el) { fcFilter2=cat; document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderFC(); }
+renderFC();
+
+// ── QUIZ ──
+let quizQ=[],quizIdx=0,quizCorrect=0,quizAnswered=false,quizStarted=false;
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5);}
+function initQuiz() {
+  quizStarted=true; quizQ=shuffle(quizData).slice(0,20);
+  quizIdx=0; quizCorrect=0; quizAnswered=false;
+  document.getElementById('quiz-active').style.display='block';
+  document.getElementById('quiz-results').classList.remove('show');
+  renderQuestion();
+}
+function renderQuestion() {
+  if(quizIdx>=quizQ.length){showResults();return;}
+  quizAnswered=false;
+  const q=quizQ[quizIdx];
+  document.getElementById('q-counter').textContent=`Question ${quizIdx+1} / ${quizQ.length}`;
+  document.getElementById('q-score-live').textContent=`${quizCorrect} / ${quizIdx} correctes`;
+  document.getElementById('q-progress').style.width=(quizIdx/quizQ.length*100)+'%';
+  document.getElementById('btn-next').classList.remove('show');
+  document.getElementById('question-container').innerHTML=`
+    <div class="question-card">
+      <div class="q-category">${q.cat}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${q.opts.map((o,i)=>`<div class="option" onclick="answerQ(${i})" data-idx="${i}"><span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span></div>`).join('')}</div>
+      <div class="explanation" id="expl"><strong>Explication :</strong> ${q.exp}</div>
+    </div>`;
+}
+function answerQ(chosen) {
+  if(quizAnswered) return;
+  quizAnswered=true;
+  const q=quizQ[quizIdx];
+  document.querySelectorAll('.option').forEach(o=>o.classList.add('answered'));
+  document.querySelectorAll('.option')[q.ans].classList.add('correct');
+  if(chosen===q.ans){quizCorrect++;}
+  else{document.querySelectorAll('.option')[chosen].classList.add('wrong');}
+  document.getElementById('expl').classList.add('show');
+  document.getElementById('btn-next').classList.add('show');
+  document.getElementById('q-score-live').textContent=`${quizCorrect} / ${quizIdx+1} correctes`;
+}
+function nextQuestion(){quizIdx++;renderQuestion();}
+function showResults() {
+  document.getElementById('quiz-active').style.display='none';
+  const pct=Math.round(quizCorrect/quizQ.length*100);
+  const s=document.getElementById('r-score');
+  s.textContent=pct+'%';
+  s.style.color=pct>=70?'var(--accent)':pct>=50?'var(--accent3)':'var(--accent2)';
+  document.getElementById('r-label').textContent=`${quizCorrect} / ${quizQ.length} questions correctes`;
+  document.getElementById('r-correct').textContent=quizCorrect;
+  document.getElementById('r-wrong').textContent=quizQ.length-quizCorrect;
+  document.getElementById('quiz-results').classList.add('show');
+}
+function restartQuiz(){quizStarted=false;initQuiz();}
+</script>
+</body>
+</html>
